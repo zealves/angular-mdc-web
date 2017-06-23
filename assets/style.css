@@ -244,7 +244,7 @@ td {
 
 .demo-card__16-9-media {
   height: 12.313rem;
-  background-image: url(/assets/16-9.jpg);
+  background-image: url(https://material-components-web.appspot.com/images/16-9.jpg);
   background-repeat: no-repeat;
   background-size: cover; }
 
