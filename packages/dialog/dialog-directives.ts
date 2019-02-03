@@ -14,8 +14,8 @@ import { MdcRipple } from '@angular-mdc/web/ripple';
 @Directive({ selector: '[mdcDialogAction]' })
 export class MdcDialogAction {
   @Input('mdcDialogAction')
-  get action(): string | null { return this._action; }
-  set action(action: string | null) {
+  get action(): string { return this._action; }
+  set action(action: string) {
     // If the directive is set without a name (updated programatically), then this setter will
     // trigger with an empty string and should not overwrite the programatically set value.
     if (!action) { return; }
@@ -23,7 +23,7 @@ export class MdcDialogAction {
     this._action = action;
     this.elementRef.nativeElement.setAttribute('data-mdc-dialog-action', this._action);
   }
-  private _action: string | null = null;
+  private _action: string = '';
 
   constructor(public elementRef: ElementRef<HTMLElement>) { }
 }

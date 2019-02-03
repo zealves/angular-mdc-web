@@ -155,6 +155,41 @@ describe('MdcDialog Service', () => {
     expect(dialogRef.componentInstance.dialogRef).toBe(dialogRef);
   });
 
+  it('should restore `aria-hidden` to the overlay container siblings on close', fakeAsync(() => {
+    const sibling = document.createElement('div');
+
+    sibling.setAttribute('aria-hidden', 'true');
+    overlayContainerElement.parentNode!.appendChild(sibling);
+
+    const dialogRef = dialog.open(PizzaMsg, { viewContainerRef: testViewContainerRef });
+    viewContainerFixture.detectChanges();
+    flush();
+
+    expect(sibling.getAttribute('aria-hidden')).toBe('true', 'Expected sibling to be hidden.');
+
+    dialogRef.close();
+    viewContainerFixture.detectChanges();
+    flush();
+
+    expect(sibling.getAttribute('aria-hidden')).toBe('true', 'Expected sibling to remain hidden.');
+    sibling.parentNode!.removeChild(sibling);
+  }));
+
+  it('should not set `aria-hidden` on `aria-live` elements', fakeAsync(() => {
+    const sibling = document.createElement('div');
+
+    sibling.setAttribute('aria-live', 'polite');
+    overlayContainerElement.parentNode!.appendChild(sibling);
+
+    dialog.open(PizzaMsg, { viewContainerRef: testViewContainerRef });
+    viewContainerFixture.detectChanges();
+    flush();
+
+    expect(sibling.hasAttribute('aria-hidden'))
+      .toBe(false, 'Expected live element not to be hidden.');
+    sibling.parentNode!.removeChild(sibling);
+  }));
+
   it('should notify the observers if all open dialogs have finished closing', fakeAsync(() => {
     const ref1 = dialog.open(PizzaMsg, { viewContainerRef: testViewContainerRef });
     const ref2 = dialog.open(SimpleDialog, { viewContainerRef: testViewContainerRef });
