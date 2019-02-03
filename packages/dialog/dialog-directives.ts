@@ -11,9 +11,7 @@ import { MdcButton } from '@angular-mdc/web/button';
 import { toBoolean } from '@angular-mdc/web/common';
 import { MdcRipple } from '@angular-mdc/web/ripple';
 
-@Directive({
-  selector: '[mdcDialogAction]',
-})
+@Directive({ selector: '[mdcDialogAction]' })
 export class MdcDialogAction {
   @Input('mdcDialogAction')
   get action(): string | null { return this._action; }
