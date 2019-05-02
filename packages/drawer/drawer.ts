@@ -16,12 +16,14 @@ import {
 import { Subscription, fromEvent } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
+import { MDCComponent } from '@angular-mdc/web/base';
 import { Platform, toBoolean } from '@angular-mdc/web/common';
 import { MdcList } from '@angular-mdc/web/list';
 
 import createFocusTrap, { FocusTrap } from 'focus-trap';
 
 import {
+  MDCDrawerAdapter,
   MDCDismissibleDrawerFoundation,
   MDCModalDrawerFoundation
 } from '@material/drawer';
@@ -83,7 +85,8 @@ export class MdcDrawerAppContent { }
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None
 })
-export class MdcDrawer implements AfterViewInit, OnDestroy {
+export class MdcDrawer extends MDCComponent<MDCDismissibleDrawerFoundation | MDCModalDrawerFoundation>
+  implements AfterViewInit, OnDestroy {
   private _initialized: boolean = false;
   private _previousFocus: Element | null = null;
   private _scrimElement: HTMLElement | null = null;
@@ -130,8 +133,8 @@ export class MdcDrawer implements AfterViewInit, OnDestroy {
   get dismissible(): boolean { return this.drawer === 'dismissible'; }
   get permanent(): boolean { return this.drawer === 'permanent'; }
 
-  private _createAdapter() {
-    return {
+  getDefaultFoundation() {
+    const adapter: MDCDrawerAdapter = {
       addClass: (className: string) => this._getHostElement().classList.add(className),
       removeClass: (className: string) => this._getHostElement().classList.remove(className),
       hasClass: (className: string) => this._getHostElement().classList.contains(className),
@@ -158,22 +161,16 @@ export class MdcDrawer implements AfterViewInit, OnDestroy {
       trapFocus: () => this._focusTrapInstance!.activate(),
       releaseFocus: () => this._focusTrapInstance!.deactivate()
     };
+    return this.dismissible ? new MDCDismissibleDrawerFoundation(adapter) : new MDCModalDrawerFoundation(adapter);
   }
-
-  private _foundation: {
-    destroy(): void,
-    open(): void,
-    close(): void,
-    isOpen(): boolean,
-    handleKeydown(evt: KeyboardEvent): void,
-    handleTransitionEnd(evt: TransitionEvent): void
-  } = new MDCDismissibleDrawerFoundation(this._createAdapter());
 
   constructor(
     private _platform: Platform,
     private _ngZone: NgZone,
     private _changeDetectorRef: ChangeDetectorRef,
-    public elementRef: ElementRef<HTMLElement>) { }
+    public elementRef: ElementRef<HTMLElement>) {
+    super(elementRef);
+  }
 
   ngAfterViewInit(): void {
     this._initListType();
@@ -256,12 +253,8 @@ export class MdcDrawer implements AfterViewInit, OnDestroy {
 
     this._initialized = true;
     this._removeDrawerModifiers();
-
-    if (this.modal) {
-      this._foundation = new MDCModalDrawerFoundation(this._createAdapter());
-    } else {
-      this._foundation = new MDCDismissibleDrawerFoundation(this._createAdapter());
-    }
+    this._foundation = this.getDefaultFoundation();
+    this._foundation.init();
 
     if (!this.permanent) {
       this._getHostElement().classList.add(`mdc-drawer--${this.drawer}`);

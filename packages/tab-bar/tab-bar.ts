@@ -44,7 +44,7 @@ export class MdcTabActivatedEvent {
   encapsulation: ViewEncapsulation.None,
   providers: [{ provide: MDC_TAB_BAR_PARENT_COMPONENT, useExisting: MdcTabBar }]
 })
-export class MdcTabBar extends MDCComponent<any> implements AfterContentInit, OnDestroy {
+export class MdcTabBar extends MDCComponent<MDCTabBarFoundation> implements AfterContentInit, OnDestroy {
   /** Emits whenever the component is destroyed. */
   private _destroy = new Subject<void>();
 
@@ -141,7 +141,7 @@ export class MdcTabBar extends MDCComponent<any> implements AfterContentInit, On
       isRTL: () => this._platform.isBrowser ?
         window.getComputedStyle(this._getHostElement()).getPropertyValue('direction') === 'rtl' : false,
       setActiveTab: (index: number) => this.activateTab(index),
-      activateTabAtIndex: (index: number, clientRect: ClientRect) => {
+      activateTabAtIndex: (index: number, clientRect?: ClientRect) => {
         if (this._indexIsInRange(index)) {
           this.tabs.toArray()[index].activate(clientRect);
         }
