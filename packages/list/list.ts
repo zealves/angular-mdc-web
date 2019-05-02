@@ -22,7 +22,7 @@ import { toBoolean, Platform } from '@angular-mdc/web/common';
 import { MdcListItem, MdcListSelectionChange, MDC_LIST_PARENT_COMPONENT } from './list-item';
 
 import { cssClasses, strings } from '@material/list/constants';
-import { ponyfill } from '@material/dom';
+import { matches } from '@material/dom/ponyfill';
 import { MDCListFoundation, MDCListAdapter } from '@material/list';
 
 /** Change event that is being fired whenever the selected state of an option changes. */
@@ -267,6 +267,7 @@ export class MdcList extends MDCComponent<any> implements AfterViewInit, OnDestr
       },
       isFocusInsideList: () => this._platform.isBrowser ?
         this.elementRef.nativeElement.contains(document.activeElement) : false,
+      isRootFocused: () => this._platform.isBrowser ? document.activeElement === this._getHostElement() : false,
       notifyAction: (index: number) => {
         this.actionEvent.emit({ index: index });
       }
@@ -446,10 +447,7 @@ export class MdcList extends MDCComponent<any> implements AfterViewInit, OnDestr
 
   _onKeydown(evt: KeyboardEvent): void {
     const index = this._getListItemIndexByEvent(evt);
-
-    if (index >= 0) {
-      this._foundation.handleKeydown(evt, (<any>evt.target).classList.contains(cssClasses.LIST_ITEM_CLASS), index);
-    }
+    this._foundation.handleKeydown(evt, (<any>evt.target).classList.contains(cssClasses.LIST_ITEM_CLASS), index);
   }
 
   _handleClickEvent(evt: MouseEvent): void {
@@ -462,7 +460,7 @@ export class MdcList extends MDCComponent<any> implements AfterViewInit, OnDestr
     }
 
     // Toggle the checkbox only if it's not the target of the event, or the checkbox will have 2 change events.
-    const toggleCheckbox = !ponyfill.matches(target, strings.CHECKBOX_RADIO_SELECTOR);
+    const toggleCheckbox = !matches(target, strings.CHECKBOX_RADIO_SELECTOR);
     this._foundation.handleClick(index, toggleCheckbox);
   }
 

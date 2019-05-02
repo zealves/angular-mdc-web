@@ -31,7 +31,7 @@
     "@angular/forms": "^7.2.12",
     "@angular/platform-browser": "^7.2.12",
     "core-js": "^2.6.5",
-    "material-components-web": "^1.1.1",
+    "material-components-web": "^2.0.0",
     "rxjs": "^6.4.0",
     "tsickle": "^0.34.3",
     "tslib": "1.9.3",
@@ -54,7 +54,7 @@
     "codelyzer": "^5.0.0",
     "cpx": "^1.5.0",
     "cz-conventional-changelog": "^2.1.0",
-    "focus-trap": "4.0.2",
+    "focus-trap": "^5.0.0",
     "fs-extra": "^7.0.0",
     "glob": "^7.1.2",
     "gulp": "^3.9.1",
@@ -93,7 +93,7 @@
     "typescript": "~3.2.2",
     "validate-commit-msg": "^2.14.0",
     "webpack": "^4.29.6",
-    "webpack-cli": "^3.3.0"
+    "webpack-cli": "^3.3.1"
   },
   "config": {
     "validate-commit-msg": {
